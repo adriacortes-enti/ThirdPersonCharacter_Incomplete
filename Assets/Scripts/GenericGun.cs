@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,6 +15,8 @@ public class GenericGun : MonoBehaviour
     public UnityEvent onFire;
     public Transform firePoint;
     public GameObject bullet;
+    public float rayDistance;
+    public GameObject realAim;
     [Header("Animation")]
     public float positionRecover;
     public float rotationRecover;
@@ -23,16 +24,34 @@ public class GenericGun : MonoBehaviour
     public Vector3 knockbackRotation;
     Vector3 originalPosition;
     Quaternion originalRotation;
+    Camera cam;
     private void Start()
     {
         originalPosition = transform.localPosition;
         originalRotation = transform.localRotation;
+
+        cam = Camera.main;
     }
 
     void Update()
     {
         transform.localPosition = Vector3.Lerp(transform.localPosition, originalPosition, positionRecover * Time.deltaTime);
         transform.localRotation = Quaternion.Lerp(transform.localRotation, originalRotation, rotationRecover * Time.deltaTime);
+
+        Vector3 worldHit;
+
+        Debug.DrawRay(firePoint.position, firePoint.forward * rayDistance, Color.red);
+        if (Physics.Raycast(firePoint.position, firePoint.forward, out RaycastHit hit, rayDistance))
+        {
+            Debug.DrawRay(firePoint.position, firePoint.forward * hit.distance, Color.green);
+            worldHit = hit.point;
+        }
+        else
+        {
+            worldHit = firePoint.position + (firePoint.forward * rayDistance);
+        }
+
+        realAim.GetComponent<RectTransform>().position = cam.WorldToScreenPoint(worldHit);
     }
     public void Fire()
     {
