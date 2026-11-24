@@ -7300,6 +7300,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CamMover
   rotateSpeed: 1
+  lerpSpeed: 20
   camPos: {fileID: 2120384275}
   cam: {fileID: 963194225}
   distance: 3
